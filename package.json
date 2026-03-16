@@ -48,13 +48,18 @@
   },
   "private": true,
   "scripts": {
-    "build": "tsc -b && vite build",
     "cf-typegen": "wrangler types",
     "check": "tsc && vite build && wrangler deploy --dry-run",
-    "deploy": "bun run build && wrangler deploy",
-    "dev": "vite",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "deploy": "bun run build && wrangler deploy --env production",
+    "dev": "vite",
+    "dev:prod": "tsc -b && vite build && wrangler dev --remote",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
   },
   "type": "module"
 }

@@ -1,11 +1,7 @@
 import { eq } from "drizzle-orm";
 import { usersTable } from "../../database/schema";
+import type { User, NewUser } from "../../database/schema";
 import type { DrizzleD1Database } from "drizzle-orm/d1";
-
-type User = {
-  id: number;
-  name: string;
-};
 
 class UserRepository {
   async getAll(db: DrizzleD1Database): Promise<User[]> {
@@ -20,19 +16,19 @@ class UserRepository {
     return result[0];
   }
 
-  async add(db: DrizzleD1Database, name: string): Promise<User> {
-    const result = await db.insert(usersTable).values({ name }).returning();
+  async add(db: DrizzleD1Database, user: NewUser): Promise<User> {
+    const result = await db.insert(usersTable).values(user).returning();
     return result[0];
   }
 
   async update(
     db: DrizzleD1Database,
     id: number,
-    name: string,
+    data: Partial<NewUser>,
   ): Promise<User | null> {
     const result = await db
       .update(usersTable)
-      .set({ name })
+      .set(data)
       .where(eq(usersTable.id, id))
       .returning();
 

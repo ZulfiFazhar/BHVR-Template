@@ -4,9 +4,9 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { userService, type User } from "@/services/userService";
 
-export const Route = createFileRoute('/user')({
+export const Route = createFileRoute("/user")({
   component: UserPage,
-})
+});
 
 function UserPage() {
   const queryClient = useQueryClient();
@@ -15,49 +15,54 @@ function UserPage() {
   const [editingName, setEditingName] = useState("");
 
   const { data: users = [], isLoading: usersLoading } = useQuery({
-    queryKey: ['users'],
+    queryKey: ["users"],
     queryFn: userService.getUsers,
   });
 
   const createMutation = useMutation({
     mutationFn: userService.createUser,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['users'] });
+      queryClient.invalidateQueries({ queryKey: ["users"] });
       setName("");
     },
     onError: (error) => {
       console.error("Error creating user:", error);
-    }
+    },
   });
 
   const deleteMutation = useMutation({
     mutationFn: userService.deleteUser,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['users'] });
+      queryClient.invalidateQueries({ queryKey: ["users"] });
     },
     onError: (error) => {
       console.error("Error deleting user:", error);
-    }
+    },
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, name }: { id: number; name: string }) => userService.updateUser(id, name),
+    mutationFn: ({ id, name }: { id: number; name: string }) =>
+      userService.updateUser(id, { name }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['users'] });
+      queryClient.invalidateQueries({ queryKey: ["users"] });
       setEditingId(null);
       setEditingName("");
     },
     onError: (error) => {
       console.error("Error updating user:", error);
-    }
+    },
   });
 
-  const loading = usersLoading || createMutation.isPending || deleteMutation.isPending || updateMutation.isPending;
+  const loading =
+    usersLoading ||
+    createMutation.isPending ||
+    deleteMutation.isPending ||
+    updateMutation.isPending;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
-    createMutation.mutate(name);
+    createMutation.mutate({ name });
   };
 
   const handleDelete = (id: number) => {

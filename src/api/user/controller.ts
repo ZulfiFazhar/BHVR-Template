@@ -1,5 +1,5 @@
 import type { Context } from "hono";
-import { userService } from "./userService";
+import { userService } from "./service";
 import { getDb, type Env } from "../../database/db";
 import {
   responseCreated,
@@ -10,8 +10,8 @@ import {
 class UserController {
   createUser = async (c: Context<{ Bindings: Env }>) => {
     const db = getDb(c.env);
-    const { name } = await c.req.json();
-    const newUser = await userService.addUser(db, name);
+    const body = await c.req.json();
+    const newUser = await userService.addUser(db, body);
     return responseCreated(c, "User created successfully", newUser);
   };
 
@@ -34,8 +34,8 @@ class UserController {
   updateUser = async (c: Context<{ Bindings: Env }>) => {
     const db = getDb(c.env);
     const id = Number(c.req.param("id"));
-    const { name } = await c.req.json();
-    const updatedUser = await userService.updateUser(db, id, name);
+    const body = await c.req.json();
+    const updatedUser = await userService.updateUser(db, id, body);
     if (!updatedUser) {
       return responseNotFound(c, "User not found");
     }

@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { userController } from "./userController";
+import { userController } from "./controller";
 
 const userRoute = new Hono();
 

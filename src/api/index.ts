@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import userRoute from "./users/userRoute";
+import userRoute from "./user/route";
 
 import { responseOK } from "./utils/response";
 

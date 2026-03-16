@@ -15,6 +15,5 @@ export const http = ky.create({
   headers: {
     "Content-Type": "application/json",
   },
-  // You can add common hooks here, e.g., for auth tokens
   hooks: {},
 });
