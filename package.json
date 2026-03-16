@@ -19,8 +19,10 @@
     "@tanstack/react-router-devtools": "^1.166.9",
     "dotenv": "^17.3.1",
     "drizzle-orm": "^0.45.1",
+    "framer-motion": "^12.37.0",
     "hono": "^4.12.8",
     "ky": "^1.14.3",
+    "lucide-react": "^0.577.0",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "tailwindcss": "^4.2.1"
