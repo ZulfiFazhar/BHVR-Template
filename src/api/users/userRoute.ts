@@ -1,7 +1,7 @@
 import { Hono } from "hono";
-import { userController } from "@server/controllers/userController";
+import { userController } from "./userController";
 
-const userRoute = new Hono<{ Bindings: Env }>();
+const userRoute = new Hono();
 
 userRoute.get("/", userController.getUsers);
 userRoute.post("/", userController.createUser);

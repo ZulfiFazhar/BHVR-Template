@@ -1,12 +1,16 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import reactLogo from "@client/assets/react.svg";
+import reactLogo from "@/assets/react.svg";
 import viteLogo from "/vite.svg";
-import cloudflareLogo from "@client/assets/Cloudflare_Logo.svg";
-import honoLogo from "@client/assets/hono.svg";
+import cloudflareLogo from "@/assets/Cloudflare_Logo.svg";
+import honoLogo from "@/assets/hono.svg";
+import { http } from "@/lib/http";
 
-import { Link } from "react-router";
+export const Route = createFileRoute("/")({
+  component: Index,
+});
 
-function App() {
+function Index() {
   const [count, setCount] = useState(0);
   const [name, setName] = useState("unknown");
 
@@ -63,7 +67,7 @@ function App() {
           <p className="mt-4">
             Edit{" "}
             <code className="bg-zinc-800 dark:bg-zinc-200 dark:text-zinc-900 px-1 rounded">
-              src/App.tsx
+              src/routes/index.tsx
             </code>{" "}
             and save to test HMR
           </p>
@@ -72,8 +76,9 @@ function App() {
         <div className="flex flex-col justify-center items-center gap-2 p-8">
           <button
             onClick={() => {
-              fetch("/api/name")
-                .then((res) => res.json() as Promise<{ name: string }>)
+              http
+                .get("name")
+                .json<{ name: string }>()
                 .then((data) => setName(data.name));
             }}
             aria-label="get name"
@@ -102,5 +107,3 @@ function App() {
     </div>
   );
 }
-
-export default App;

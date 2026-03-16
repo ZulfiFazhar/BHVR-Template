@@ -1,5 +1,5 @@
 import type { Context } from "hono";
-import { userService } from "@server/services/userService";
+import { userService } from "./userService";
 
 class UserController {
   createUser = async (c: Context) => {

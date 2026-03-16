@@ -1,59 +1,68 @@
-import { Link } from "react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 
-import { useState, useEffect } from "react";
-import { userService, type User } from "@client/services/userService";
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { userService, type User } from "@/services/userService";
 
-export default function UserPage() {
-  const [users, setUsers] = useState<User[]>([]);
+export const Route = createFileRoute('/user')({
+  component: UserPage,
+})
+
+function UserPage() {
+  const queryClient = useQueryClient();
   const [name, setName] = useState("");
-  const [loading, setLoading] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editingName, setEditingName] = useState("");
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
+  const { data: users = [], isLoading: usersLoading } = useQuery({
+    queryKey: ['users'],
+    queryFn: userService.getUsers,
+  });
 
-  const fetchUsers = async () => {
-    try {
-      setLoading(true);
-      const data = await userService.getUsers();
-      setUsers(data);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    } finally {
-      setLoading(false);
+  const createMutation = useMutation({
+    mutationFn: userService.createUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      setName("");
+    },
+    onError: (error) => {
+      console.error("Error creating user:", error);
     }
-  };
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const deleteMutation = useMutation({
+    mutationFn: userService.deleteUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+    },
+    onError: (error) => {
+      console.error("Error deleting user:", error);
+    }
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, name }: { id: number; name: string }) => userService.updateUser(id, name),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      setEditingId(null);
+      setEditingName("");
+    },
+    onError: (error) => {
+      console.error("Error updating user:", error);
+    }
+  });
+
+  const loading = usersLoading || createMutation.isPending || deleteMutation.isPending || updateMutation.isPending;
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
-
-    try {
-      setLoading(true);
-      const newUser = await userService.createUser(name);
-      setUsers([...users, newUser]);
-      setName("");
-    } catch (error) {
-      console.error("Error creating user:", error);
-    } finally {
-      setLoading(false);
-    }
+    createMutation.mutate(name);
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = (id: number) => {
     if (!confirm("Are you sure you want to delete this user?")) return;
-
-    try {
-      setLoading(true);
-      await userService.deleteUser(id);
-      setUsers(users.filter((user) => user.id !== id));
-    } catch (error) {
-      console.error("Error deleting user:", error);
-    } finally {
-      setLoading(false);
-    }
+    deleteMutation.mutate(id);
   };
 
   const handleEdit = (user: User) => {
@@ -61,20 +70,9 @@ export default function UserPage() {
     setEditingName(user.name);
   };
 
-  const handleUpdate = async (id: number) => {
+  const handleUpdate = (id: number) => {
     if (!editingName.trim()) return;
-
-    try {
-      setLoading(true);
-      const updatedUser = await userService.updateUser(id, editingName);
-      setUsers(users.map((u) => (u.id === id ? updatedUser : u)));
-      setEditingId(null);
-      setEditingName("");
-    } catch (error) {
-      console.error("Error updating user:", error);
-    } finally {
-      setLoading(false);
-    }
+    updateMutation.mutate({ id, name: editingName });
   };
 
   const handleCancelEdit = () => {

@@ -77,7 +77,7 @@ Vite is configured with:
 
 - `@cloudflare/vite-plugin` for seamless Cloudflare Workers integration
 - `@tailwindcss/vite` for Tailwind CSS v4 support
-- Path aliases (`@client/*`, `@server/*`) for clean imports
+- Path aliases (`@/*`, `@api/*`) for clean imports
 
 ### TypeScript Configuration
 
@@ -170,7 +170,7 @@ bun run preview
 - **React Router v7** for declarative client-side routing
 - **Tailwind CSS v4** with Vite plugin for styling
 - **Service layer pattern** for API communication
-- Path aliases (`@client/*`) for clean imports
+- Path aliases (`@/*`) for clean imports
 
 ### Backend (Hono + Cloudflare Workers)
 
@@ -179,7 +179,7 @@ bun run preview
   - **Controllers**: Handle requests and responses
   - **Services**: Contain business logic
   - **Repositories**: Manage data persistence
-- Path aliases (`@server/*`) for clean imports
+- Path aliases (`@api/*`) for clean imports
 - Node.js compatibility enabled for broader API support
 
 ### Example: User Feature

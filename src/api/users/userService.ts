@@ -1,4 +1,4 @@
-import { userRepository } from "@server/repositories/userRepository";
+import { userRepository } from "./userRepository";
 
 class UserService {
   addUser(name: string) {

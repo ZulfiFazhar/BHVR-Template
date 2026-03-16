@@ -24,8 +24,8 @@
 
     "baseUrl": ".",
     "paths": {
-      "@client/*": ["./src/client/*"]
+      "@/*": ["./src/*"]
     }
   },
-  "include": ["src/client"]
+  "include": ["src/"]
 }
